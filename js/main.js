@@ -10,13 +10,24 @@ function timestampToText(ts) {
   return mDate.toString();
 }
 
-async function fetchSeek() {
+function findFilename(ts) {
+  return function (tsl) {
+    for (let [ts0, ts1, vidName] of tsl) {
+      if (ts >= ts0 && ts <= ts1) {
+        return vidName;
+      }
+    }
+    return "";
+  };
+}
+
+async function fetchData() {
   const response = await fetch(SEEK_URL);
   return await response.json();
 }
 
 document.addEventListener("DOMContentLoaded", async (_) => {
-  window.seekData = await fetchSeek();
+  window.seekData = await fetchData();
 
   const videosEl = document.getElementsByClassName("video-container")[0];
   const sliderEl = document.getElementById("timestamp-slider");
@@ -29,15 +40,25 @@ document.addEventListener("DOMContentLoaded", async (_) => {
   timestampEl.innerHTML = timestampToText(sliderEl.value);
 
   sliderEl.addEventListener("input", (ev) => {
-    timestampEl.innerHTML = timestampToText(ev.target.value);
-    // TODO:
-    // find videos and timestamps of current slider time
-    //   load new video
-    //   seek to position
+    const mts = ev.target.value;
+    timestampEl.innerHTML = timestampToText(mts);
+
+    const fileNames = Object.values(window.seekData.ranges).map(
+      findFilename(ev.target.value)
+    );
+
+    const positions = fileNames.map((fileName) => {
+      if (fileName == "") return -1;
+
+      const mSeeks = window.seekData.seeks[fileName];
+      // TODO:
+      // find in seek
+      // loadVideo
+      // when loaded, seek
+    });
   });
 
   const seekKeys = Object.keys(window.seekData);
-  console.log(seekKeys);
   videosEl.innerHTML = seekKeys;
   // TODO:
   // populate <video> tags
