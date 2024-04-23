@@ -21,6 +21,25 @@ function findFilename(ts) {
   };
 }
 
+function tsToPos(ts, ts0, ts1, pos0, pos1) {
+  return ((ts - ts0)/(ts1 - ts0)) * (pos1 - pos0) + pos0;
+};
+
+function findPosition(ts) {
+  return function (tsl) {
+    let [ts0, pos0] = tsl[0];
+    for (let i = 1; i < tsl.length; i++) {
+      const [ts1, pos1] = tsl[i];
+      if (ts >= ts0 && ts <= ts1) {
+        return tsToPos(ts, ts0, ts1, pos0, pos1);
+      } else {
+        [ts0, pos0] = tsl[i];
+      }
+    }
+    return -1;
+  };
+}
+
 async function fetchData() {
   const response = await fetch(SEEK_URL);
   return await response.json();
@@ -44,17 +63,16 @@ document.addEventListener("DOMContentLoaded", async (_) => {
     timestampEl.innerHTML = timestampToText(mts);
 
     const fileNames = Object.values(window.seekData.ranges).map(
-      findFilename(ev.target.value)
+      findFilename(mts)
     );
 
     const positions = fileNames.map((fileName) => {
       if (fileName == "") return -1;
-
-      const mSeeks = window.seekData.seeks[fileName];
+      const mPos = findPosition(mts)(window.seekData.seeks[fileName]);
       // TODO:
-      // find in seek
-      // loadVideo
+      // load fileName
       // when loaded, seek
+      return mPos;
     });
   });
 
