@@ -77,6 +77,8 @@ document.addEventListener("DOMContentLoaded", async (_) => {
       if (mVid) {
         mVid.pause();
         mVid.removeAttribute("data-position");
+        mSrc.setAttribute("src", "");
+        mVid.load();
       }
 
       if (fileName == "") return -1;
