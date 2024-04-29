@@ -50,6 +50,10 @@ async function fetchData() {
 
 document.addEventListener("DOMContentLoaded", async (_) => {
   const seekData = await fetchData();
+  seekData.dir = {};
+  Object.entries(seekData.ranges).forEach(([dir, filenames]) =>
+    filenames.forEach(([_0, _1, fn]) => (seekData.dir[fn] = dir))
+  );
 
   const videosEl = document.getElementById("video-container");
   const sliderEl = document.getElementById("timestamp-slider");
@@ -80,7 +84,7 @@ document.addEventListener("DOMContentLoaded", async (_) => {
       const mPos = findPosition(currentTimestamp)(seekData.seeks[fileName]);
 
       if (mVid) {
-        mSrc.setAttribute("src", fileName);
+        mSrc.setAttribute("src", `vids/${seekData.dir[fileName]}/${fileName}`);
         mVid.setAttribute("data-position", mPos);
         mVid.load();
       }
