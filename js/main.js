@@ -17,29 +17,33 @@ function timestampToPosition(ts, ts0, ts1, pos0, pos1) {
   return ((ts - ts0) / (ts1 - ts0)) * (pos1 - pos0) + pos0;
 }
 
-function findFilename(ts) {
-  return function (tsl) {
-    for (let [ts0, ts1, vidName] of tsl) {
-      if (ts >= ts0 && ts <= ts1) {
-        return vidName;
-      }
-    }
-    return "";
-  };
-}
+function findFilenamePosition(ts) {
+  return function ({ camera, ranges, seeks, ..._ }) {
+    let fileName = "";
+    let position = -1;
 
-function findPosition(ts) {
-  return function (tsl) {
-    let [ts0, pos0] = tsl[0];
-    for (let i = 1; i < tsl.length; i++) {
-      const [ts1, pos1] = tsl[i];
+    for (let [ts0, ts1, fName] of ranges) {
       if (ts >= ts0 && ts <= ts1) {
-        return timestampToPosition(ts, ts0, ts1, pos0, pos1);
-      } else {
-        [ts0, pos0] = tsl[i];
+        fileName = fName;
+        break;
       }
     }
-    return -1;
+
+    if (fileName == "") return { fileName, position };
+
+    const fileSeeks = seeks[fileName];
+    let [ts0, pos0] = fileSeeks[0];
+    for (let i = 1; i < fileSeeks.length; i++) {
+      const [ts1, pos1] = fileSeeks[i];
+      if (ts >= ts0 && ts <= ts1) {
+        position = timestampToPosition(ts, ts0, ts1, pos0, pos1);
+        break;
+      } else {
+        [ts0, pos0] = fileSeeks[i];
+      }
+    }
+
+    return { fileName: `${camera}/${fileName}`, position };
   };
 }
 
@@ -50,13 +54,10 @@ async function fetchData() {
 
 document.addEventListener("DOMContentLoaded", async (_) => {
   const seekData = await fetchData();
-  seekData.dir = {};
-  Object.entries(seekData.ranges).forEach(([dir, filenames]) =>
-    filenames.forEach(([_0, _1, fn]) => (seekData.dir[fn] = dir))
-  );
 
-  const videosEl = document.getElementById("video-container");
+  const videoContainerEl = document.getElementById("video-container");
   const sliderEl = document.getElementById("timestamp-slider");
+  const videoEls = document.getElementsByClassName("video");
 
   sliderEl.setAttribute("min", `${minDate.getTime() / 1000}`);
   sliderEl.setAttribute("max", `${maxDate.getTime() / 1000}`);
@@ -66,67 +67,63 @@ document.addEventListener("DOMContentLoaded", async (_) => {
     const timestampEl = document.getElementById("timestamp-slider-value");
     timestampEl.innerHTML = timestampToText(currentTimestamp);
 
-    const fileNames = Object.values(seekData.ranges).map(
-      findFilename(currentTimestamp)
-    );
+    Array.from(videoEls).forEach((mVid) => {
+      const mCamera = mVid.getAttribute("data-camera");
+      const mSrc = mVid.getElementsByClassName("video-source")[0];
 
-    const positions = fileNames.map((fileName, idx) => {
-      const mVid = document.getElementById(`video-${idx}`);
-      const mSrc = document.getElementById(`video-source-${idx}`);
+      mVid.pause();
+      mVid.removeAttribute("data-position");
+      mSrc.setAttribute("src", "");
+      mVid.load();
 
-      if (mVid) {
-        mVid.pause();
-        mVid.removeAttribute("data-position");
-        mSrc.setAttribute("src", "");
+      const { fileName, position } = findFilenamePosition(currentTimestamp)(
+        seekData[mCamera]
+      );
+
+      if (fileName != "") {
+        mSrc.setAttribute("src", `vids/${fileName}`);
+        mVid.setAttribute("data-position", position);
         mVid.load();
       }
-
-      if (fileName == "") return -1;
-
-      const mPos = findPosition(currentTimestamp)(seekData.seeks[fileName]);
-
-      if (mVid) {
-        mSrc.setAttribute("src", `vids/${seekData.dir[fileName]}/${fileName}`);
-        mVid.setAttribute("data-position", mPos);
-        mVid.load();
-      }
-
-      return mPos;
     });
 
-    // console.log(fileNames);
-    // console.log(positions);
+    // const filesAndPositions = Object.values(seekData).map(
+    //   findFilenamePosition(currentTimestamp)
+    // );
+    // console.log(filesAndPositions);
   }
 
-  videosEl.innerHTML = "";
+  videoContainerEl.innerHTML = "";
+  const cameras = Object.keys(seekData);
+
   for (let i = 0; i < NUM_VIDS; i++) {
     const mVid = document.createElement("video");
     const mSrc = document.createElement("source");
 
-    mVid.id = `video-${i}`;
     mVid.classList.add("video");
+    mVid.setAttribute("data-camera", cameras[i]);
     mVid.setAttribute("playsinline", "");
     mVid.setAttribute("muted", "");
     mVid.style.width = `${100 / PER_ROW}%`;
 
     mVid.addEventListener("loadeddata", (ev) => {
-      console.log("loadeddata");
+      console.log("loaded", cameras[i]);
       const vidEl = ev.target;
       vidEl.currentTime = vidEl.getAttribute("data-position") || 0;
     });
 
     mVid.addEventListener("seeked", (ev) => {
-      console.log("seeked");
+      console.log("seeked", cameras[i]);
       ev.target.play();
       ev.target.pause();
     });
 
-    mSrc.id = `video-source-${i}`;
+    mSrc.classList.add("video-source");
     mSrc.setAttribute("src", "");
     mSrc.setAttribute("type", "video/mp4");
 
     mVid.appendChild(mSrc);
-    videosEl.appendChild(mVid);
+    videoContainerEl.appendChild(mVid);
   }
 
   updateVideos(sliderEl.value);
