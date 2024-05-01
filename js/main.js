@@ -1,11 +1,15 @@
 const SEEK_URL =
   "https://raw.githubusercontent.com/acervos-digitais/oito-um-utils/main/metadata/0801-1152-crop-64/seek.json";
 
+const VIDEOS_URL = "https://pro-probable-goblin.ngrok-free.app/0801-500";
+
 const minDate = new Date("2023-01-08T00:00:00-03:00");
 const maxDate = new Date("2023-01-08T23:59:59-03:00");
 
 const NUM_VIDS = 8;
+const CAMERA_OFFSET = 5;
 const PER_ROW = Math.floor(NUM_VIDS ** (9 / 16));
+const NUM_ROWS = Math.ceil(NUM_VIDS / PER_ROW);
 
 function timestampToText(ts) {
   const mDate = new Date(0);
@@ -81,7 +85,7 @@ document.addEventListener("DOMContentLoaded", async (_) => {
       );
 
       if (fileName != "") {
-        mSrc.setAttribute("src", `vids/${fileName}`);
+        mSrc.setAttribute("src", `${VIDEOS_URL}/${fileName}`);
         mVid.setAttribute("data-position", position);
         mVid.load();
       }
@@ -97,23 +101,24 @@ document.addEventListener("DOMContentLoaded", async (_) => {
   const cameras = Object.keys(seekData);
 
   for (let i = 0; i < NUM_VIDS; i++) {
+    const cIdx = (CAMERA_OFFSET + i) % cameras.length;
     const mVid = document.createElement("video");
     const mSrc = document.createElement("source");
 
     mVid.classList.add("video");
-    mVid.setAttribute("data-camera", cameras[i]);
+    mVid.setAttribute("data-camera", cameras[cIdx]);
     mVid.setAttribute("playsinline", "");
     mVid.setAttribute("muted", "");
     mVid.style.width = `${100 / PER_ROW}%`;
 
     mVid.addEventListener("loadeddata", (ev) => {
-      console.log("loaded", cameras[i]);
+      // console.log("loaded", cameras[cIdx]);
       const vidEl = ev.target;
       vidEl.currentTime = vidEl.getAttribute("data-position") || 0;
     });
 
     mVid.addEventListener("seeked", (ev) => {
-      console.log("seeked", cameras[i]);
+      // console.log("seeked", cameras[cIdx]);
       ev.target.play();
       ev.target.pause();
     });
