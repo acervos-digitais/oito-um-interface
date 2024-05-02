@@ -6,8 +6,8 @@ const VIDEOS_URL = "https://pro-probable-goblin.ngrok-free.app/0801-500";
 const minDate = new Date("2023-01-08T00:00:00-03:00");
 const maxDate = new Date("2023-01-08T23:59:59-03:00");
 
-const NUM_VIDS = 8;
-const CAMERA_OFFSET = 5;
+const NUM_VIDS = 16;
+const CAMERA_OFFSET = 0;
 const PER_ROW = Math.floor(NUM_VIDS ** (9 / 16));
 const NUM_ROWS = Math.ceil(NUM_VIDS / PER_ROW);
 
@@ -67,6 +67,7 @@ async function fetchData() {
 document.addEventListener("DOMContentLoaded", async (_) => {
   const seekData = await fetchData();
 
+  const navigationContainerEl = document.getElementById("navigation-container");
   const videoContainerEl = document.getElementById("video-container");
   const pickerEl = document.getElementById("timestamp-picker");
   const videoEls = document.getElementsByClassName("video");
@@ -96,15 +97,11 @@ document.addEventListener("DOMContentLoaded", async (_) => {
         mVid.load();
       }
     });
-
-    // const filesAndPositions = Object.values(seekData).map(
-    //   findFilenamePosition(currentTimestamp)
-    // );
-    // console.log(filesAndPositions);
   }
 
   videoContainerEl.innerHTML = "";
   const cameras = Object.keys(seekData);
+  const vidHeight = (window.innerHeight - navigationContainerEl.clientHeight) / NUM_ROWS;
 
   for (let i = 0; i < NUM_VIDS; i++) {
     const cIdx = (CAMERA_OFFSET + i) % cameras.length;
@@ -116,6 +113,7 @@ document.addEventListener("DOMContentLoaded", async (_) => {
     mVid.setAttribute("playsinline", "");
     mVid.setAttribute("muted", "");
     mVid.style.width = `${100 / PER_ROW}%`;
+    mVid.style.maxHeight = `${vidHeight}px`;
 
     mVid.addEventListener("loadeddata", (ev) => {
       // console.log("loaded", cameras[cIdx]);
