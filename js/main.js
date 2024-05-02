@@ -11,6 +11,14 @@ const CAMERA_OFFSET = 5;
 const PER_ROW = Math.floor(NUM_VIDS ** (9 / 16));
 const NUM_ROWS = Math.ceil(NUM_VIDS / PER_ROW);
 
+function timeToTimestamp(timeString) {
+  const mDate = new Date(minDate);
+  const hourMinutes = timeString.split(":").map((v) => parseInt(v));
+
+  mDate.setUTCSeconds(hourMinutes[0] * 3600 + hourMinutes[1] * 60);
+  return mDate.getTime() / 1000;
+}
+
 function timestampToText(ts) {
   const mDate = new Date(0);
   mDate.setUTCSeconds(ts);
@@ -60,15 +68,13 @@ document.addEventListener("DOMContentLoaded", async (_) => {
   const seekData = await fetchData();
 
   const videoContainerEl = document.getElementById("video-container");
-  const sliderEl = document.getElementById("timestamp-slider");
+  const pickerEl = document.getElementById("timestamp-picker");
   const videoEls = document.getElementsByClassName("video");
 
-  sliderEl.setAttribute("min", `${minDate.getTime() / 1000}`);
-  sliderEl.setAttribute("max", `${maxDate.getTime() / 1000}`);
-  sliderEl.setAttribute("value", `${minDate.getTime() / 1000}`);
+  pickerEl.setAttribute("value", "00:00");
 
   function updateVideos(currentTimestamp) {
-    const timestampEl = document.getElementById("timestamp-slider-value");
+    const timestampEl = document.getElementById("timestamp-value");
     timestampEl.innerHTML = timestampToText(currentTimestamp);
 
     Array.from(videoEls).forEach((mVid) => {
@@ -131,9 +137,10 @@ document.addEventListener("DOMContentLoaded", async (_) => {
     videoContainerEl.appendChild(mVid);
   }
 
-  updateVideos(sliderEl.value);
+  updateVideos(timeToTimestamp(pickerEl.value));
 
-  sliderEl.addEventListener("input", (ev) => {
-    updateVideos(ev.target.value);
+  pickerEl.addEventListener("input", (ev) => {
+    updateVideos(timeToTimestamp(ev.target.value));
+    ev.target.blur();
   });
 });
