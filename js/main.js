@@ -6,7 +6,7 @@ const VIDEOS_URL = "https://pro-probable-goblin.ngrok-free.app/0801-500";
 const minDate = new Date("2023-01-08T00:00:00-03:00");
 const maxDate = new Date("2023-01-08T23:59:59-03:00");
 
-const NUM_VIDS = 16;
+const NUM_VIDS = 32;
 
 function getGridDims(numVideos) {
   const videoArea = (window.innerWidth * window.innerHeight) / numVideos;
