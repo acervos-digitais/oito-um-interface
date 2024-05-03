@@ -67,7 +67,7 @@ main {
   display: block;
   max-width: 500px;
   margin: 0;
-  /* border: 1px solid hotpink; */
+  cursor: pointer;
 }
 
 .navigation-container {
@@ -81,4 +81,25 @@ main {
   margin: 0;
   margin-left: 5%;
   width: 10%;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5);
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.overlay.visible {
+  display: flex;
+}
+
+.overlay  .overlay-video {
+  display: block;
+  max-width: 100%;
 }

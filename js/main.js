@@ -79,6 +79,22 @@ document.addEventListener("DOMContentLoaded", async (_) => {
   const pickerEl = document.getElementById("timestamp-picker");
   const videoEls = document.getElementsByClassName("video");
 
+  const overlayEl = document.getElementById("overlay");
+  const overlayVideoEl = document.getElementById("overlay-video");
+  const overlayVideoSrcEl = document.getElementById("overlay-video-source");
+
+  overlayEl.addEventListener("click", () => {
+    overlayEl.classList.remove("visible");
+
+    overlayVideoEl.pause();
+    overlayVideoSrcEl.setAttribute("src", "");
+    overlayVideoEl.load();
+  });
+
+  overlayVideoEl.addEventListener("click", (ev) => {
+    ev.stopPropagation();
+  });
+
   const videoContainerHeight = window.innerHeight - navContainerEl.clientHeight;
   videoContainerEl.style.height = `${videoContainerHeight}px`;
 
@@ -135,6 +151,20 @@ document.addEventListener("DOMContentLoaded", async (_) => {
       // console.log("loaded", cameras[i]);
       const vidEl = ev.target;
       vidEl.currentTime = vidEl.getAttribute("data-position") || 0;
+    });
+
+    mVid.addEventListener("click", (ev) => {
+      const vidEl = ev.target;
+      const srcEl = vidEl.getElementsByClassName("video-source")[0];
+
+      const vidSrc = srcEl.getAttribute("src");
+      const vidPos = vidEl.getAttribute("data-position");
+
+      overlayVideoSrcEl.setAttribute("src", vidSrc.replace("500", "1152"));
+      overlayVideoEl.currentTime = vidPos;
+      overlayVideoEl.load();
+
+      overlayEl.classList.add("visible");
     });
 
     mSrc.classList.add("video-source");
