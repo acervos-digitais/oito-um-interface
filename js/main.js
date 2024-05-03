@@ -6,7 +6,7 @@ const VIDEOS_URL = "https://pro-probable-goblin.ngrok-free.app/0801-500";
 const minDate = new Date("2023-01-08T00:00:00-03:00");
 const maxDate = new Date("2023-01-08T23:59:59-03:00");
 
-const NUM_VIDS = 16;
+const NUM_VIDS = 20;
 const CAMERA_OFFSET = 0;
 const PER_ROW = Math.floor(NUM_VIDS ** (9 / 16));
 const NUM_ROWS = Math.ceil(NUM_VIDS / PER_ROW);
@@ -81,20 +81,28 @@ document.addEventListener("DOMContentLoaded", async (_) => {
     Array.from(videoEls).forEach((mVid) => {
       const mCamera = mVid.getAttribute("data-camera");
       const mSrc = mVid.getElementsByClassName("video-source")[0];
-
-      mVid.pause();
-      mVid.removeAttribute("data-position");
-      mSrc.setAttribute("src", "");
-      mVid.load();
+      const mSrcSrc = mSrc.getAttribute("src");
 
       const { fileName, position } = findFilenamePosition(currentTimestamp)(
         seekData[mCamera]
       );
 
-      if (fileName != "") {
-        mSrc.setAttribute("src", `${VIDEOS_URL}/${fileName}`);
-        mVid.setAttribute("data-position", position);
+      const newSrcSrc = `${VIDEOS_URL}/${fileName}`;
+
+      mVid.pause();
+      if (newSrcSrc != mSrcSrc) {
+        mSrc.setAttribute("src", "");
+        mVid.removeAttribute("data-position");
+        if (fileName != "") {
+          mSrc.setAttribute("src", newSrcSrc);
+          mVid.setAttribute("data-position", position);
+        }
         mVid.load();
+      } else {
+        if (position != -1) {
+          mVid.setAttribute("data-position", position);
+          mVid.currentTime = mVid.getAttribute("data-position") || 0;
+        }
       }
     });
   }
@@ -119,12 +127,6 @@ document.addEventListener("DOMContentLoaded", async (_) => {
       // console.log("loaded", cameras[cIdx]);
       const vidEl = ev.target;
       vidEl.currentTime = vidEl.getAttribute("data-position") || 0;
-    });
-
-    mVid.addEventListener("seeked", (ev) => {
-      // console.log("seeked", cameras[cIdx]);
-      ev.target.play();
-      ev.target.pause();
     });
 
     mSrc.classList.add("video-source");
