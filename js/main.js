@@ -144,6 +144,7 @@ document.addEventListener("DOMContentLoaded", async (_) => {
     mVid.setAttribute("data-camera", cameras[i]);
     mVid.setAttribute("playsinline", "");
     mVid.setAttribute("muted", "");
+    mVid.setAttribute("crossorigin", "anonymous");
     mVid.style.width = `${100 / NUM_COLS}%`;
     mVid.style.maxHeight = `${100 / NUM_ROWS}%`;
 
