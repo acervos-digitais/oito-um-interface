@@ -1,5 +1,5 @@
 const SEEK_URL =
-  "https://raw.githubusercontent.com/acervos-digitais/oito-um-utils/main/metadata/0801-1152-crop-64/seek.json";
+  "https://raw.githubusercontent.com/acervos-digitais/oito-um-utils/main/metadata/0801-1152/seek.json";
 
 const VIDEOS_URL = "https://pro-probable-goblin.ngrok-free.app/0801-500";
 
@@ -123,7 +123,7 @@ document.addEventListener("DOMContentLoaded", async (_) => {
           mSrc.setAttribute("src", newSrcSrc);
           mVid.setAttribute("data-position", position);
         }
-        mVid.load();
+        setTimeout(() => mVid.load(), 200 + Math.random() * 500);
       } else {
         if (position != -1) {
           mVid.setAttribute("data-position", position);
