@@ -4,8 +4,11 @@ const VIDEOS_URL = "/videos/0801-500";
 
 const minDate = new Date("2023-01-08T00:00:00-03:00");
 const maxDate = new Date("2023-01-08T23:59:59-03:00");
+const SECS_PER_DAY = 24 * 60 * 60;
 
 const NUM_VIDS = 32;
+
+const SECS_PER_VID = SECS_PER_DAY / NUM_VIDS;
 
 function getGridDims(numVideos) {
   const videoArea = (window.innerWidth * window.innerHeight) / numVideos;
@@ -15,7 +18,23 @@ function getGridDims(numVideos) {
   return [numCols, numRows];
 }
 
+function populateCameraPicker(el, options) {
+  options.toSorted().forEach(o => {
+    const oEl = document.createElement("option");
+    oEl.classList.add("camera-option");
+    oEl.value = o;
+    oEl.innerHTML = o;
+    el.appendChild(oEl);
+  });
+}
+
 let [NUM_COLS, NUM_ROWS] = getGridDims(NUM_VIDS);
+
+function offsetToTimestamp(offsetSecs) {
+  const mDate = new Date(minDate);
+  mDate.setUTCSeconds(offsetSecs);
+  return mDate.getTime() / 1000;
+}
 
 function timeToTimestamp(timeString) {
   const mDate = new Date(minDate);
@@ -75,7 +94,8 @@ document.addEventListener("DOMContentLoaded", async (_) => {
 
   const navContainerEl = document.getElementById("navigation-container");
   const videoContainerEl = document.getElementById("video-container");
-  const pickerEl = document.getElementById("timestamp-picker");
+  const pickerTimeEl = document.getElementById("timestamp-picker");
+  const pickerCameraEl = document.getElementById("camera-picker");
   const videoEls = document.getElementsByClassName("video");
 
   const overlayEl = document.getElementById("overlay");
@@ -97,21 +117,17 @@ document.addEventListener("DOMContentLoaded", async (_) => {
   const videoContainerHeight = window.innerHeight - navContainerEl.clientHeight;
   videoContainerEl.style.height = `${videoContainerHeight}px`;
 
-  pickerEl.setAttribute("value", "00:00");
+  pickerTimeEl.setAttribute("value", "00:00");
+  populateCameraPicker(pickerCameraEl, Object.keys(seekData));
 
-  function updateVideos(currentTimestamp) {
-    const timestampEl = document.getElementById("timestamp-value");
-    timestampEl.innerHTML = timestampToText(currentTimestamp);
-
+  function updateVideos(getTimestamp, getCamera) {
     Array.from(videoEls).forEach((mVid) => {
-      const mCamera = mVid.getAttribute("data-camera");
+      const mTimestamp = getTimestamp(mVid);
+      const mCamera = getCamera(mVid);
       const mSrc = mVid.getElementsByClassName("video-source")[0];
       const mSrcSrc = mSrc.getAttribute("src");
 
-      const { fileName, position } = findFilenamePosition(currentTimestamp)(
-        seekData[mCamera]
-      );
-
+      const { fileName, position } = findFilenamePosition(mTimestamp)(seekData[mCamera]);
       const newSrcSrc = `${VIDEOS_URL}/${fileName}`;
 
       mVid.pause();
@@ -132,6 +148,18 @@ document.addEventListener("DOMContentLoaded", async (_) => {
     });
   }
 
+  function updateVideosByTime(currentTimestamp) {
+    const selectLabelEl = document.getElementById("selection-value");
+    selectLabelEl.innerHTML = timestampToText(currentTimestamp);
+    updateVideos((_) => currentTimestamp, (e) => e.getAttribute("data-camera"));
+  }
+
+  function updateVideosByCamera(camera, label) {
+    const selectLabelEl = document.getElementById("selection-value");
+    selectLabelEl.innerHTML = label;
+    updateVideos((e) => e.getAttribute("data-timestamp"), (_) => camera);
+  }
+
   videoContainerEl.innerHTML = "";
   const cameras = Object.keys(seekData);
 
@@ -141,6 +169,7 @@ document.addEventListener("DOMContentLoaded", async (_) => {
 
     mVid.classList.add("video");
     mVid.setAttribute("data-camera", cameras[i]);
+    mVid.setAttribute("data-timestamp", offsetToTimestamp(i * SECS_PER_VID));
     mVid.setAttribute("playsinline", "");
     mVid.setAttribute("muted", "");
     mVid.setAttribute("crossorigin", "anonymous");
@@ -175,10 +204,16 @@ document.addEventListener("DOMContentLoaded", async (_) => {
     videoContainerEl.appendChild(mVid);
   }
 
-  updateVideos(timeToTimestamp(pickerEl.value));
+  updateVideosByTime(timeToTimestamp(pickerTimeEl.value));
 
-  pickerEl.addEventListener("input", (ev) => {
-    updateVideos(timeToTimestamp(ev.target.value));
+  pickerTimeEl.addEventListener("input", (ev) => {
+    updateVideosByTime(timeToTimestamp(ev.target.value));
+    ev.target.blur();
+  });
+
+  pickerCameraEl.addEventListener("input", (ev) => {
+    const selOption = ev.target.options[ev.target.selectedIndex];
+    updateVideosByCamera(ev.target.value, selOption.text);
     ev.target.blur();
   });
 });
