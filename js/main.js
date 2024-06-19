@@ -1,7 +1,6 @@
-const SEEK_URL =
-  "https://raw.githubusercontent.com/acervos-digitais/oito-um-utils/main/metadata/0801-1152/seek.json";
+const SEEK_URL = "https://raw.githubusercontent.com/acervos-digitais/oito-um-utils/main/metadata/0801-1152/seek.json";
 
-const VIDEOS_URL = "https://pro-probable-goblin.ngrok-free.app/0801-500";
+const VIDEOS_URL = "/videos/0801-500";
 
 const minDate = new Date("2023-01-08T00:00:00-03:00");
 const maxDate = new Date("2023-01-08T23:59:59-03:00");
@@ -161,7 +160,7 @@ document.addEventListener("DOMContentLoaded", async (_) => {
       const vidSrc = srcEl.getAttribute("src");
       const vidPos = vidEl.getAttribute("data-position");
 
-      overlayVideoSrcEl.setAttribute("src", vidSrc.replace("500", "1152"));
+      overlayVideoSrcEl.setAttribute("src", vidSrc);
       overlayVideoEl.currentTime = vidPos;
       overlayVideoEl.load();
 
