@@ -69,6 +69,9 @@ function populateCameraPicker(el, options) {
     const oEl = document.createElement("option");
     oEl.classList.add("camera-option");
     oEl.value = o;
+    if (o == Object.keys(CAM2NAMES)[4]) {
+      oEl.setAttribute("selected", "");
+    }
     oEl.innerHTML = CAM2NAMES[o];
     el.appendChild(oEl);
   });
