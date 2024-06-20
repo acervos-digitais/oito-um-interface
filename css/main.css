@@ -82,7 +82,6 @@ main {
 
 .navigation-container .selection-value {
   display: block;
-  width: 46%;
 }
 
 .navigation-container .picker {
@@ -93,6 +92,7 @@ main {
 
 .navigation-container .dropdown-picker {
   appearance: none;
+  margin: 0 5%;
   line-height: 1.5;
 }
 

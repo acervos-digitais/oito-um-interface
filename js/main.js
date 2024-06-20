@@ -18,6 +18,8 @@ const NUM_VIDS = 33;
 
 const SECS_PER_VID = SECS_PER_DAY / NUM_VIDS;
 
+const BY_TIME = window.location.pathname.endsWith("/time/") || window.location.pathname.endsWith("/time");
+
 function getGridDims(numVideos) {
   const videoArea = (window.innerWidth * window.innerHeight) / numVideos;
   const dimFactor = (videoArea / (16 * 9)) ** 0.5;
@@ -104,11 +106,20 @@ document.addEventListener("DOMContentLoaded", async (_) => {
   const videoContainerEl = document.getElementById("video-container");
   const pickerTimeEl = document.getElementById("timestamp-picker");
   const pickerCameraEl = document.getElementById("camera-picker");
+  const navTypeEl = document.getElementById("navigation-type-value");
   const videoEls = document.getElementsByClassName("video");
 
   const overlayEl = document.getElementById("overlay");
   const overlayVideoEl = document.getElementById("overlay-video");
   const overlayVideoSrcEl = document.getElementById("overlay-video-source");
+
+  if (BY_TIME) {
+    navTypeEl.innerHTML = "Navigate By Time";
+    pickerCameraEl.style.display = "none";
+  } else {
+    navTypeEl.innerHTML = "Navigate By Location";
+    pickerTimeEl.style.display = "none";
+  }
 
   overlayEl.addEventListener("click", () => {
     overlayEl.classList.remove("visible");
@@ -157,14 +168,10 @@ document.addEventListener("DOMContentLoaded", async (_) => {
   }
 
   function updateVideosByTime(currentTimestamp) {
-    const selectLabelEl = document.getElementById("selection-value");
-    selectLabelEl.innerHTML = timestampToText(currentTimestamp);
     updateVideos((_) => currentTimestamp, (e) => e.getAttribute("data-camera"));
   }
 
-  function updateVideosByCamera(camera, label) {
-    const selectLabelEl = document.getElementById("selection-value");
-    selectLabelEl.innerHTML = label;
+  function updateVideosByCamera(camera) {
     updateVideos((e) => e.getAttribute("data-timestamp"), (_) => camera);
   }
 
@@ -212,7 +219,11 @@ document.addEventListener("DOMContentLoaded", async (_) => {
     videoContainerEl.appendChild(mVid);
   }
 
-  updateVideosByTime(timeToTimestamp(pickerTimeEl.value));
+  if (BY_TIME) {
+    updateVideosByTime(timeToTimestamp(pickerTimeEl.value));
+  } else {
+    updateVideosByCamera(pickerCameraEl.value);
+  }
 
   pickerTimeEl.addEventListener("input", (ev) => {
     updateVideosByTime(timeToTimestamp(ev.target.value));
@@ -220,8 +231,7 @@ document.addEventListener("DOMContentLoaded", async (_) => {
   });
 
   pickerCameraEl.addEventListener("input", (ev) => {
-    const selOption = ev.target.options[ev.target.selectedIndex];
-    updateVideosByCamera(ev.target.value, selOption.text);
+    updateVideosByCamera(ev.target.value,);
     ev.target.blur();
   });
 });
