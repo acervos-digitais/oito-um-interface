@@ -1,6 +1,7 @@
 const SEEK_URL = "https://raw.githubusercontent.com/acervos-digitais/oito-um-utils/main/metadata/0801-1152/seek.json";
 
 const VIDEOS_URL = "/videos/0801-500";
+const IMAGES_URL = "/images/0801-500";
 
 const DATE_STRING_OPTIONS = {
   weekday: 'short',
