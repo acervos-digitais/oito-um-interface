@@ -77,22 +77,24 @@ function populateCameraPicker(el, options) {
   });
 }
 
-function populateTimePicker(el, start, stop, inc) {
-  for (let i = start; i < stop; i += inc) {
+function populateTimePicker(el, optionList) {
+  optionList.forEach(i => {
     const oEl = document.createElement("option");
     oEl.classList.add("time-option");
     oEl.value = i;
     oEl.innerHTML = `0${i}`.slice(-2);
     el.appendChild(oEl);
-  }
+  });
 }
 
 function populateHourPicker(el) {
-  populateTimePicker(el, 0, 24, 1);
+  const hours = [...Array(24).keys()];
+  populateTimePicker(el, hours);
 }
 
 function populateMinutePicker(el) {
-  populateTimePicker(el, 0, 60, 5);
+  const minutes = [0, 10, 20, 30, 40, 50];
+  populateTimePicker(el, minutes);
 }
 
 let [NUM_COLS, NUM_ROWS] = getGridDims(NUM_VIDS);
