@@ -1,0 +1,20 @@
+.navigation-container .selection-value {
+  display: block;
+}
+
+.navigation-container .time-picker {
+  appearance: none;
+  padding: 0px 8px;
+  line-height: 1.5;
+}
+
+.navigation-container .time-picker:first-of-type {
+  margin-left: 5%;
+}
+
+.navigation-container .dropdown-picker {
+  appearance: none;
+  padding: 0px 8px;
+  margin: 0 5%;
+  line-height: 1.5;
+}
