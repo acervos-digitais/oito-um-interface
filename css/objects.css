@@ -1,0 +1,24 @@
+.navigation-container {
+  gap: 0 12px;
+}
+
+.navigation-container .selection-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 10px 12px;
+}
+
+.navigation-container .selection-container .object-option-button {
+  display: block;
+  cursor: pointer;
+  background-color: var(--text-color);
+  color: var(--bgnd-color);
+  border: 0;
+  padding: 4px 8px;
+}
+
+.navigation-container .selection-container .object-option-button.selected {
+  background-color: var(--text-color-a-h);
+  color: var(--text-color);
+}
