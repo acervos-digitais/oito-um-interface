@@ -64,6 +64,7 @@ function getGridDims(numVideos) {
   const numRows = Math.ceil(numVideos / numCols);
   return [numCols, numRows];
 }
+let [NUM_COLS, NUM_ROWS] = getGridDims(NUM_VIDS);
 
 function populateCameraPicker(el, options) {
   options.toSorted().forEach(o => {
@@ -97,8 +98,6 @@ function populateMinutePicker(el) {
   const minutes = [0, 10, 15, 20, 30, 40, 45, 50];
   populateTimePicker(el, minutes);
 }
-
-let [NUM_COLS, NUM_ROWS] = getGridDims(NUM_VIDS);
 
 function offsetToTimestamp(offsetSecs) {
   const mDate = new Date(minDate);
@@ -159,17 +158,30 @@ async function fetchData(mUrl) {
   return await response.json();
 }
 
+function createImageElement(camera, tsOffset) {
+  const imgContainerEl = document.createElement("div");
+  const imgEl = document.createElement("img");
+
+  imgContainerEl.classList.add("image-wrapper");
+  imgEl.classList.add("image-image");
+
+  imgContainerEl.setAttribute("data-camera", camera);
+  imgContainerEl.setAttribute("data-timestamp", offsetToTimestamp(tsOffset));
+  imgContainerEl.style.width = `${100 / NUM_COLS}%`;
+
+  imgContainerEl.appendChild(imgEl);
+  return imgContainerEl;
+}
+
 document.addEventListener("DOMContentLoaded", async (_) => {
   const seekData = await fetchData(SEEK_URL);
 
-  const navTitleEl = document.getElementById("navigation-title");
-  const navContainerEl = document.getElementById("navigation-container");
-  const videoContainerEl = document.getElementById("video-container");
+  const imagesEl = document.getElementById("images-container");
   const pickerHourEl = document.getElementById("hour-picker");
   const pickerMinuteEl = document.getElementById("minute-picker");
   const pickerCameraEl = document.getElementById("camera-picker");
   const navTypeEl = document.getElementById("navigation-type-value");
-  const imgEls = document.getElementsByClassName("image-container");
+  const imgWrappers = document.getElementsByClassName("image-wrapper");
 
   const overlayEl = document.getElementById("overlay");
   const overlayVideoEl = document.getElementById("overlay-video");
@@ -196,9 +208,6 @@ document.addEventListener("DOMContentLoaded", async (_) => {
     ev.stopPropagation();
   });
 
-  const videoContainerHeight = window.innerHeight - navContainerEl.clientHeight - navTitleEl.clientHeight;
-  videoContainerEl.style.height = BY_TIME ? `${videoContainerHeight}px` : `${3*videoContainerHeight}px`;
-
   populateCameraPicker(pickerCameraEl, Object.keys(seekData));
   populateHourPicker(pickerHourEl);
   populateMinutePicker(pickerMinuteEl);
@@ -206,33 +215,22 @@ document.addEventListener("DOMContentLoaded", async (_) => {
   pickerMinuteEl.value = 0;
 
   function updateVideos(getTimestamp, getCamera) {
-    Array.from(imgEls).forEach((mDiv) => {
+    Array.from(imgWrappers).forEach((mDiv) => {
       const mTimestamp = getTimestamp(mDiv);
       const mCamera = getCamera(mDiv);
       const { fileName, position } = findFilenamePosition(mTimestamp)(seekData[mCamera]);
 
-      const mImg = mDiv.getElementsByClassName("image-image")[0];
       const imgSrc = `${IMAGES_URL}/${mCamera}/${Math.floor(mTimestamp)}.jpg`;
-      mImg.style.backgroundImage = "";
-      if (fileName != "") {
-        mImg.style.backgroundImage = `url('${imgSrc}')`;
-      }
+      const videoSrc = `${VIDEOS_URL}/${fileName}`;
 
-      const videoSrc = mDiv.getAttribute("data-src");
-      const newVideoSrc = `${VIDEOS_URL}/${fileName}`;
+      const mImg = mDiv.getElementsByClassName("image-image")[0];
+      mImg.src = (fileName == "") ? "" : imgSrc;
+      mImg.style.height = (fileName == "") ? "0" : "initial";
 
-      if (newVideoSrc != videoSrc) {
-        mDiv.setAttribute("data-src", "");
-        mDiv.removeAttribute("data-position");
-        if (fileName != "") {
-          mDiv.setAttribute("data-src", newVideoSrc);
-          mDiv.setAttribute("data-position", position);
-        }
-      } else {
-        if (position != -1) {
-          mDiv.setAttribute("data-position", position);
-        }
-      }
+      mDiv.style.maxHeight = `${mImg.offsetWidth * 9 / 16}px`;
+
+      mDiv.setAttribute("data-video-src", videoSrc);
+      mDiv.setAttribute("data-video-seek", position);
     });
   }
 
@@ -244,35 +242,26 @@ document.addEventListener("DOMContentLoaded", async (_) => {
     updateVideos((e) => e.getAttribute("data-timestamp"), (_) => camera);
   }
 
-  videoContainerEl.innerHTML = "";
+  imagesEl.innerHTML = "";
   const cameras = Object.keys(seekData);
 
   const numElements = BY_TIME ? NUM_VIDS : SECONDS_PER_DAY / FRAME_PERIOD_SECONDS;
   for (let i = 0; i < numElements; i++) {
-    const mDiv = document.createElement("div");
-    const mImg = document.createElement("div");
+    const mImgEl = createImageElement(cameras[i], i * FRAME_PERIOD_SECONDS);
+    imagesEl.appendChild(mImgEl);
 
-    mDiv.classList.add("image-container");
-    mDiv.setAttribute("data-camera", cameras[i]);
-    mDiv.setAttribute("data-timestamp", offsetToTimestamp(i * FRAME_PERIOD_SECONDS));
-    mDiv.style.width = `${100 / NUM_COLS}%`;
-    mDiv.style.maxHeight = `${100 / NUM_ROWS}%`;
-
-    mDiv.addEventListener("click", (_) => {
-      const vidSrc = mDiv.getAttribute("data-src");
-      const vidPos = mDiv.getAttribute("data-position");
+    mImgEl.addEventListener("click", (_) => {
+      const vidSrc = mImgEl.getAttribute("data-video-src");
+      const vidPos = mImgEl.getAttribute("data-video-seek");
 
       overlayVideoSrcEl.setAttribute("src", vidSrc);
       overlayVideoEl.currentTime = vidPos;
-      overlayVideoEl.load();
 
-      overlayEl.classList.add("visible");
+      if (vidPos >= 0) {
+        overlayVideoEl.load();
+        overlayEl.classList.add("visible");
+      }
     });
-
-    mImg.classList.add("image-image");
-
-    mDiv.appendChild(mImg);
-    videoContainerEl.appendChild(mDiv);
   }
 
   if (BY_TIME) {
