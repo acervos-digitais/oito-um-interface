@@ -94,7 +94,7 @@ function populateHourPicker(el) {
 }
 
 function populateMinutePicker(el) {
-  const minutes = [0, 15, 30, 45];
+  const minutes = [0, 10, 15, 20, 30, 40, 45, 50];
   populateTimePicker(el, minutes);
 }
 
