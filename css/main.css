@@ -75,6 +75,7 @@ main {
 
 .video-container .image-container {
   max-width: 500px;
+  border: 1px solid var(--bgnd-color-h);
   cursor: pointer;
   overflow: hidden;
   opacity: 1;
