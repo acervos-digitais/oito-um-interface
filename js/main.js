@@ -48,11 +48,11 @@ const CAM2NAMES = {
 
 const minDate = new Date("2023-01-08T00:00:00-03:00");
 const maxDate = new Date("2023-01-08T23:59:59-03:00");
-const SECS_PER_DAY = 24 * 60 * 60;
 
 const NUM_VIDS = 33;
 
-const SECS_PER_VID = SECS_PER_DAY / NUM_VIDS;
+const SECONDS_PER_DAY = 24 * 60 * 60;
+const FRAME_PERIOD_SECONDS = 15 * 60;
 
 const BY_TIME = window.location.pathname.endsWith("/time/") || window.location.pathname.endsWith("/time");
 
@@ -93,7 +93,7 @@ function populateHourPicker(el) {
 }
 
 function populateMinutePicker(el) {
-  const minutes = [0, 10, 20, 30, 40, 50];
+  const minutes = [0, 15, 30, 45];
   populateTimePicker(el, minutes);
 }
 
@@ -161,13 +161,14 @@ async function fetchData(mUrl) {
 document.addEventListener("DOMContentLoaded", async (_) => {
   const seekData = await fetchData(SEEK_URL);
 
+  const navTitleEl = document.getElementById("navigation-title");
   const navContainerEl = document.getElementById("navigation-container");
   const videoContainerEl = document.getElementById("video-container");
   const pickerHourEl = document.getElementById("hour-picker");
   const pickerMinuteEl = document.getElementById("minute-picker");
   const pickerCameraEl = document.getElementById("camera-picker");
   const navTypeEl = document.getElementById("navigation-type-value");
-  const videoEls = document.getElementsByClassName("video");
+  const imgEls = document.getElementsByClassName("image-container");
 
   const overlayEl = document.getElementById("overlay");
   const overlayVideoEl = document.getElementById("overlay-video");
@@ -194,8 +195,8 @@ document.addEventListener("DOMContentLoaded", async (_) => {
     ev.stopPropagation();
   });
 
-  const videoContainerHeight = window.innerHeight - navContainerEl.clientHeight;
-  videoContainerEl.style.height = `${videoContainerHeight}px`;
+  const videoContainerHeight = window.innerHeight - navContainerEl.clientHeight - navTitleEl.clientHeight;
+  videoContainerEl.style.height = BY_TIME ? `${videoContainerHeight}px` : `${3*videoContainerHeight}px`;
 
   populateCameraPicker(pickerCameraEl, Object.keys(seekData));
   populateHourPicker(pickerHourEl);
@@ -204,28 +205,31 @@ document.addEventListener("DOMContentLoaded", async (_) => {
   pickerMinuteEl.value = 0;
 
   function updateVideos(getTimestamp, getCamera) {
-    Array.from(videoEls).forEach((mVid) => {
-      const mTimestamp = getTimestamp(mVid);
-      const mCamera = getCamera(mVid);
-      const mSrc = mVid.getElementsByClassName("video-source")[0];
-      const mSrcSrc = mSrc.getAttribute("src");
-
+    Array.from(imgEls).forEach((mDiv) => {
+      const mTimestamp = getTimestamp(mDiv);
+      const mCamera = getCamera(mDiv);
       const { fileName, position } = findFilenamePosition(mTimestamp)(seekData[mCamera]);
-      const newSrcSrc = `${VIDEOS_URL}/${fileName}`;
 
-      mVid.pause();
-      if (newSrcSrc != mSrcSrc) {
-        mSrc.setAttribute("src", "");
-        mVid.removeAttribute("data-position");
+      const mImg = mDiv.getElementsByClassName("image-image")[0];
+      const imgSrc = `${IMAGES_URL}/${mCamera}/${Math.floor(mTimestamp)}.jpg`;
+      mImg.style.backgroundImage = "";
+      if (fileName != "") {
+        mImg.style.backgroundImage = `url('${imgSrc}')`;
+      }
+
+      const videoSrc = mDiv.getAttribute("data-src");
+      const newVideoSrc = `${VIDEOS_URL}/${fileName}`;
+
+      if (newVideoSrc != videoSrc) {
+        mDiv.setAttribute("data-src", "");
+        mDiv.removeAttribute("data-position");
         if (fileName != "") {
-          mSrc.setAttribute("src", newSrcSrc);
-          mVid.setAttribute("data-position", position);
+          mDiv.setAttribute("data-src", newVideoSrc);
+          mDiv.setAttribute("data-position", position);
         }
-        setTimeout(() => mVid.load(), 200 + Math.random() * 500);
       } else {
         if (position != -1) {
-          mVid.setAttribute("data-position", position);
-          mVid.currentTime = mVid.getAttribute("data-position") || 0;
+          mDiv.setAttribute("data-position", position);
         }
       }
     });
@@ -242,31 +246,20 @@ document.addEventListener("DOMContentLoaded", async (_) => {
   videoContainerEl.innerHTML = "";
   const cameras = Object.keys(seekData);
 
-  for (let i = 0; i < NUM_VIDS; i++) {
-    const mVid = document.createElement("video");
-    const mSrc = document.createElement("source");
+  const numElements = BY_TIME ? NUM_VIDS : SECONDS_PER_DAY / FRAME_PERIOD_SECONDS;
+  for (let i = 0; i < numElements; i++) {
+    const mDiv = document.createElement("div");
+    const mImg = document.createElement("div");
 
-    mVid.classList.add("video");
-    mVid.setAttribute("data-camera", cameras[i]);
-    mVid.setAttribute("data-timestamp", offsetToTimestamp(i * SECS_PER_VID));
-    mVid.setAttribute("playsinline", "");
-    mVid.setAttribute("muted", "");
-    mVid.setAttribute("crossorigin", "anonymous");
-    mVid.style.width = `${100 / NUM_COLS}%`;
-    mVid.style.maxHeight = `${100 / NUM_ROWS}%`;
+    mDiv.classList.add("image-container");
+    mDiv.setAttribute("data-camera", cameras[i]);
+    mDiv.setAttribute("data-timestamp", offsetToTimestamp(i * FRAME_PERIOD_SECONDS));
+    mDiv.style.width = `${100 / NUM_COLS}%`;
+    mDiv.style.maxHeight = `${100 / NUM_ROWS}%`;
 
-    mVid.addEventListener("loadeddata", (ev) => {
-      // console.log("loaded", cameras[i]);
-      const vidEl = ev.target;
-      vidEl.currentTime = vidEl.getAttribute("data-position") || 0;
-    });
-
-    mVid.addEventListener("click", (ev) => {
-      const vidEl = ev.target;
-      const srcEl = vidEl.getElementsByClassName("video-source")[0];
-
-      const vidSrc = srcEl.getAttribute("src");
-      const vidPos = vidEl.getAttribute("data-position");
+    mDiv.addEventListener("click", (_) => {
+      const vidSrc = mDiv.getAttribute("data-src");
+      const vidPos = mDiv.getAttribute("data-position");
 
       overlayVideoSrcEl.setAttribute("src", vidSrc);
       overlayVideoEl.currentTime = vidPos;
@@ -275,12 +268,10 @@ document.addEventListener("DOMContentLoaded", async (_) => {
       overlayEl.classList.add("visible");
     });
 
-    mSrc.classList.add("video-source");
-    mSrc.setAttribute("src", "");
-    mSrc.setAttribute("type", "video/mp4");
+    mImg.classList.add("image-image");
 
-    mVid.appendChild(mSrc);
-    videoContainerEl.appendChild(mVid);
+    mDiv.appendChild(mImg);
+    videoContainerEl.appendChild(mDiv);
   }
 
   if (BY_TIME) {
