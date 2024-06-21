@@ -77,6 +77,24 @@ function populateCameraPicker(el, options) {
   });
 }
 
+function populateTimePicker(el, start, stop, inc) {
+  for (let i = start; i < stop; i += inc) {
+    const oEl = document.createElement("option");
+    oEl.classList.add("time-option");
+    oEl.value = i;
+    oEl.innerHTML = `0${i}`.slice(-2);
+    el.appendChild(oEl);
+  }
+}
+
+function populateHourPicker(el) {
+  populateTimePicker(el, 0, 24, 1);
+}
+
+function populateMinutePicker(el) {
+  populateTimePicker(el, 0, 60, 5);
+}
+
 let [NUM_COLS, NUM_ROWS] = getGridDims(NUM_VIDS);
 
 function offsetToTimestamp(offsetSecs) {
@@ -143,7 +161,8 @@ document.addEventListener("DOMContentLoaded", async (_) => {
 
   const navContainerEl = document.getElementById("navigation-container");
   const videoContainerEl = document.getElementById("video-container");
-  const pickerTimeEl = document.getElementById("timestamp-picker");
+  const pickerHourEl = document.getElementById("hour-picker");
+  const pickerMinuteEl = document.getElementById("minute-picker");
   const pickerCameraEl = document.getElementById("camera-picker");
   const navTypeEl = document.getElementById("navigation-type-value");
   const videoEls = document.getElementsByClassName("video");
@@ -157,7 +176,8 @@ document.addEventListener("DOMContentLoaded", async (_) => {
     pickerCameraEl.style.display = "none";
   } else {
     navTypeEl.innerHTML = "Navigate By Location";
-    pickerTimeEl.style.display = "none";
+    pickerHourEl.style.display = "none";
+    pickerMinuteEl.style.display = "none";
   }
 
   overlayEl.addEventListener("click", () => {
@@ -175,8 +195,11 @@ document.addEventListener("DOMContentLoaded", async (_) => {
   const videoContainerHeight = window.innerHeight - navContainerEl.clientHeight;
   videoContainerEl.style.height = `${videoContainerHeight}px`;
 
-  pickerTimeEl.setAttribute("value", "00:00");
   populateCameraPicker(pickerCameraEl, Object.keys(seekData));
+  populateHourPicker(pickerHourEl);
+  populateMinutePicker(pickerMinuteEl);
+  pickerHourEl.value = 0;
+  pickerMinuteEl.value = 0;
 
   function updateVideos(getTimestamp, getCamera) {
     Array.from(videoEls).forEach((mVid) => {
@@ -259,15 +282,19 @@ document.addEventListener("DOMContentLoaded", async (_) => {
   }
 
   if (BY_TIME) {
-    updateVideosByTime(timeToTimestamp(pickerTimeEl.value));
+    const timeStr = `${pickerHourEl.value}:${pickerMinuteEl.value}`;
+    updateVideosByTime(timeToTimestamp(timeStr));
   } else {
     updateVideosByCamera(pickerCameraEl.value);
   }
 
-  pickerTimeEl.addEventListener("input", (ev) => {
-    updateVideosByTime(timeToTimestamp(ev.target.value));
+  const updateByTime = (ev) => {
+    const timeStr = `${pickerHourEl.value}:${pickerMinuteEl.value}`;
+    updateVideosByTime(timeToTimestamp(timeStr));
     ev.target.blur();
-  });
+  };
+  pickerHourEl.addEventListener("input", updateByTime);
+  pickerMinuteEl.addEventListener("input", updateByTime);
 
   pickerCameraEl.addEventListener("input", (ev) => {
     updateVideosByCamera(ev.target.value,);
