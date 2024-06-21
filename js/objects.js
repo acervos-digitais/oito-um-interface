@@ -1,22 +1,3 @@
-const DATA_URL = "https://raw.githubusercontent.com/acervos-digitais/oito-um-utils/main/metadata/objects-1152/objects.json";
-
-const VIDEOS_URL = "//outros.acervos.me/videos/0801-500";
-const IMAGES_URL = "//outros.acervos.me/images/0801-500";
-
-function getGridDims(numVideos) {
-  const videoArea = (window.innerWidth * window.innerHeight) / numVideos;
-  const dimFactor = (videoArea / (16 * 9)) ** 0.5;
-  const numCols = Math.round(window.innerWidth / (16 * dimFactor));
-  const numRows = Math.ceil(numVideos / numCols);
-  return [numCols, numRows];
-}
-const [NUM_COLS, NUM_ROWS] = getGridDims(32);
-
-async function fetchData(mUrl) {
-  const response = await fetch(mUrl);
-  return await response.json();
-}
-
 function createImageElement(frameData, obs) {
   const imgWrapperEl = document.createElement("div");
   const imgEl = document.createElement("img");
@@ -50,7 +31,7 @@ let cFrames = [];
 let cFrameIdx = 0;
 
 document.addEventListener("DOMContentLoaded", async (_) => {
-  const frameData = await fetchData(DATA_URL);
+  const frameData = await fetchData(OBJS_URL);
 
   const selInputEl = document.getElementById("selection-container");
   const imagesEl = document.getElementById("images-container");

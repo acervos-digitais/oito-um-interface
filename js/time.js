@@ -1,8 +1,3 @@
-const SEEK_URL = "https://raw.githubusercontent.com/acervos-digitais/oito-um-utils/main/metadata/0801-1152/seek.json";
-
-const VIDEOS_URL = "//outros.acervos.me/videos/0801-500";
-const IMAGES_URL = "//outros.acervos.me/images/0801-500";
-
 const DATE_STRING_OPTIONS = {
   weekday: 'short',
   month: 'short',
@@ -50,21 +45,10 @@ const CAM2NAMES = {
 const minDate = new Date("2023-01-08T00:00:00-03:00");
 const maxDate = new Date("2023-01-08T23:59:59-03:00");
 
-const NUM_VIDS = 33;
-
 const SECONDS_PER_DAY = 24 * 60 * 60;
 const FRAME_PERIOD_SECONDS = 15 * 60;
 
 const BY_TIME = window.location.pathname.endsWith("/time/") || window.location.pathname.endsWith("/time");
-
-function getGridDims(numVideos) {
-  const videoArea = (window.innerWidth * window.innerHeight) / numVideos;
-  const dimFactor = (videoArea / (16 * 9)) ** 0.5;
-  const numCols = Math.round(window.innerWidth / (16 * dimFactor));
-  const numRows = Math.ceil(numVideos / numCols);
-  return [numCols, numRows];
-}
-let [NUM_COLS, NUM_ROWS] = getGridDims(NUM_VIDS);
 
 function populateCameraPicker(el, options) {
   options.toSorted().forEach(o => {
@@ -151,11 +135,6 @@ function findFilenamePosition(ts) {
 
     return { fileName: `${camera}/${fileName}`, position };
   };
-}
-
-async function fetchData(mUrl) {
-  const response = await fetch(mUrl);
-  return await response.json();
 }
 
 function createImageElement(camera, tsOffset) {
