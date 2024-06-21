@@ -118,6 +118,7 @@ main {
 
 .navigation-container .dropdown-picker {
   appearance: none;
+  padding: 0px 8px;
   margin: 0 5%;
   line-height: 1.5;
 }
