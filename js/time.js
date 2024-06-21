@@ -159,7 +159,6 @@ document.addEventListener("DOMContentLoaded", async (_) => {
   const pickerHourEl = document.getElementById("hour-picker");
   const pickerMinuteEl = document.getElementById("minute-picker");
   const pickerCameraEl = document.getElementById("camera-picker");
-  const navTypeEl = document.getElementById("navigation-type-value");
   const imgWrappers = document.getElementsByClassName("image-wrapper");
 
   const overlayEl = document.getElementById("overlay");
@@ -167,10 +166,8 @@ document.addEventListener("DOMContentLoaded", async (_) => {
   const overlayVideoSrcEl = document.getElementById("overlay-video-source");
 
   if (BY_TIME) {
-    navTypeEl.innerHTML = "Navigate By Time";
     pickerCameraEl.style.display = "none";
   } else {
-    navTypeEl.innerHTML = "Navigate By Location";
     pickerHourEl.style.display = "none";
     pickerMinuteEl.style.display = "none";
   }

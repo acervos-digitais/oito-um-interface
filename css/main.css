@@ -47,6 +47,11 @@ a:hover {
   color: var(--text-color-a-h);
 }
 
+a.disabled {
+  color: var(--text-color);
+  cursor: initial;
+}
+
 main {
   width: 100vw;
   min-height: 100vh;
@@ -56,11 +61,22 @@ main {
   position: relative;
 }
 
+.navigation-title {
+  font-size: 20px;
+  margin: 0 auto;
+}
+
+.navigation-menu {
+  font-size: 16px;
+  margin: 0 auto 8px;
+}
+
 .navigation-container {
   width: 100%;
   display: flex;
   flex-direction: row;
   align-items: center;
+  justify-content: center;
 }
 
 .images-container {

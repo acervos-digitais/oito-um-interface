@@ -18,3 +18,14 @@ async function fetchData(mUrl) {
   const response = await fetch(mUrl);
   return await response.json();
 }
+
+document.addEventListener("DOMContentLoaded", async (_) => {
+  const mUrl = location.href;
+  Array.from(document.getElementsByTagName("a")).forEach(a => {
+    const aRef = a.getAttribute("href");
+    if (mUrl.slice(-5) == aRef.slice(-5)) {
+      a.removeAttribute("href");
+      a.classList.add("disabled");
+    }
+  });
+});

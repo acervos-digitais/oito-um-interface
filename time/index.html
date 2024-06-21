@@ -21,15 +21,16 @@
 
 <body>
   <main>
-    <div id="navigation-title" class="navigation-title">Sun Jan 08 2023 GMT-0300</div>
+    <div class="navigation-title">Sun Jan 08 2023 GMT-0300</div>
+    <div class="navigation-menu">
+      <a href="../time/">TIME</a> || <a href="../location/">LOCATION</a> || <a href="../objects/">OBJECTS</a>
+    </div>
     <div id="navigation-container" class="navigation-container">
-      <div id="navigation-type-value" class="selection-value">Navigate By Time</div>
-      <select id="hour-picker" class="time-picker"></select>
-      <span style="margin: 0 3px;">:</span>
-      <select id="minute-picker" class="time-picker"></select>
+      <select id="hour-picker" class="dropdown-picker time-picker"></select>
+      <select id="minute-picker" class="dropdown-picker time-picker"></select>
       <select id="camera-picker" class="dropdown-picker"></select>
     </div>
-    <div id="images-container" class="images-container">Loading....</div>
+    <div id="images-container" class="images-container"></div>
   </main>
 
   <div id="overlay" class="overlay">
