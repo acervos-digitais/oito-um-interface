@@ -5,14 +5,14 @@ function createImageElement(frameData, obs) {
   imgWrapperEl.classList.add("image-wrapper");
   imgEl.classList.add("image-image");
 
-  imgWrapperEl.setAttribute("data-video-src", frameData.file);
+  imgWrapperEl.setAttribute("data-video-src", `${VIDEOS_URL}/${frameData.file}`);
   imgWrapperEl.setAttribute("data-video-seek", frameData.time);
 
   imgWrapperEl.innerHTML = "Loading...";
   imgWrapperEl.style.width = `${100 / NUM_COLS}%`;
 
   const cname = frameData.file.replace(/\/.+$/, "");
-  const fname = `${Math.floor(frameData.timestamp)}.jpg`
+  const fname = `${Math.floor(frameData.timestamp)}.jpg`;
   const imgSrc = `${IMAGES_URL}/${cname}/${fname}`;
 
   imgWrapperEl.innerHTML = "";
@@ -36,10 +36,6 @@ document.addEventListener("DOMContentLoaded", async (_) => {
   const selInputEl = document.getElementById("selection-container");
   const imagesEl = document.getElementById("images-container");
 
-  const overlayEl = document.getElementById("overlay");
-  const overlayVideoEl = document.getElementById("overlay-video");
-  const overlayVideoSrcEl = document.getElementById("overlay-video-source");
-
   frameOnscreen = (entries, _) => {
     entries.forEach((entry) => {
       const eEl = entry.target;
@@ -60,19 +56,9 @@ document.addEventListener("DOMContentLoaded", async (_) => {
       const mImgEl = createImageElement(frames[i], i == lastIdx - 2);
       imagesEl.appendChild(mImgEl);
 
-      mImgEl.style.maxHeight = `${mImgEl.offsetWidth * 9 / 16}px`;
+      mImgEl.style.maxHeight = `${(mImgEl.offsetWidth * 9) / 16}px`;
 
-      mImgEl.addEventListener("click", (ev) => {
-        const vidFile = ev.currentTarget.getAttribute("data-video-src");
-        const vidPos = ev.currentTarget.getAttribute("data-video-seek");
-        const vidSrc = `${VIDEOS_URL}/${vidFile}`;
-
-        overlayVideoSrcEl.setAttribute("src", vidSrc);
-        overlayVideoEl.currentTime = vidPos;
-        overlayVideoEl.load();
-
-        overlayEl.classList.add("visible");
-      });
+      mImgEl.addEventListener("click", loadOverlay);
     }
     return lastIdx;
   }
@@ -103,17 +89,5 @@ document.addEventListener("DOMContentLoaded", async (_) => {
       updateVideosByObject(selObj);
     });
     selInputEl.appendChild(optButEl);
-  });
-
-  overlayEl.addEventListener("click", () => {
-    overlayEl.classList.remove("visible");
-
-    overlayVideoEl.pause();
-    overlayVideoSrcEl.setAttribute("src", "");
-    overlayVideoEl.load();
-  });
-
-  overlayVideoEl.addEventListener("click", (ev) => {
-    ev.stopPropagation();
   });
 });

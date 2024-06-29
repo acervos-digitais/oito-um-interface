@@ -1,9 +1,9 @@
 const DATE_STRING_OPTIONS = {
-  weekday: 'short',
-  month: 'short',
-  year: 'numeric',
-  day: '2-digit',
-  timeZoneName: 'longOffset',
+  weekday: "short",
+  month: "short",
+  year: "numeric",
+  day: "2-digit",
+  timeZoneName: "longOffset",
 };
 
 const CAM2NAMES = {
@@ -36,22 +36,26 @@ const CAM2NAMES = {
   "27-4o-ANDAR-LADO-LESTE": "4th Floor (East)",
   "28-4o-ANDAR-LADO-OESTE": "4th Floor (West)",
   "29-ANEXO-I": "Annex I",
-  "30-ANEXO-I-ENTRADA-PRINCIPAL-CATRACAS": "Annex I - Main Entrance (Turnstiles)",
+  "30-ANEXO-I-ENTRADA-PRINCIPAL-CATRACAS": "Annex I - Main Entrance Turnstiles",
   "31-ANEXO-I-CONCHA-ANEXO": "Annex I - Entrance (External)",
   "32-ANEXO-III-REFEITORIO-CREDEN": "Annex III Accredited Cafeteria",
   "33-ANEXO-III-REFEITORIO": "Annex III - Cafeteria",
-}
+};
 
 const minDate = new Date("2023-01-08T00:00:00-03:00");
 const maxDate = new Date("2023-01-08T23:59:59-03:00");
 
 const SECONDS_PER_DAY = 24 * 60 * 60;
 const FRAME_PERIOD_SECONDS = 15 * 60;
+const PERIODS_PER_DAY = SECONDS_PER_DAY / FRAME_PERIOD_SECONDS;
 
-const BY_TIME = window.location.pathname.endsWith("/time/") || window.location.pathname.endsWith("/time");
+const PATHNAME = window.location.pathname;
+const BY_TIME = PATHNAME.endsWith("/time/") || PATHNAME.endsWith("/time");
+
+const NUM_IMAGES = BY_TIME ? NUM_VIDS : PERIODS_PER_DAY;
 
 function populateCameraPicker(el, options) {
-  options.toSorted().forEach(o => {
+  options.toSorted().forEach((o) => {
     const oEl = document.createElement("option");
     oEl.classList.add("camera-option");
     oEl.value = o;
@@ -64,7 +68,7 @@ function populateCameraPicker(el, options) {
 }
 
 function populateTimePicker(el, optionList) {
-  optionList.forEach(i => {
+  optionList.forEach((i) => {
     const oEl = document.createElement("option");
     oEl.classList.add("time-option");
     oEl.value = i;
@@ -161,28 +165,12 @@ document.addEventListener("DOMContentLoaded", async (_) => {
   const pickerCameraEl = document.getElementById("camera-picker");
   const imgWrappers = document.getElementsByClassName("image-wrapper");
 
-  const overlayEl = document.getElementById("overlay");
-  const overlayVideoEl = document.getElementById("overlay-video");
-  const overlayVideoSrcEl = document.getElementById("overlay-video-source");
-
   if (BY_TIME) {
     pickerCameraEl.style.display = "none";
   } else {
     pickerHourEl.style.display = "none";
     pickerMinuteEl.style.display = "none";
   }
-
-  overlayEl.addEventListener("click", () => {
-    overlayEl.classList.remove("visible");
-
-    overlayVideoEl.pause();
-    overlayVideoSrcEl.setAttribute("src", "");
-    overlayVideoEl.load();
-  });
-
-  overlayVideoEl.addEventListener("click", (ev) => {
-    ev.stopPropagation();
-  });
 
   populateCameraPicker(pickerCameraEl, Object.keys(seekData));
   populateHourPicker(pickerHourEl);
@@ -194,16 +182,17 @@ document.addEventListener("DOMContentLoaded", async (_) => {
     Array.from(imgWrappers).forEach((mDiv) => {
       const mTimestamp = getTimestamp(mDiv);
       const mCamera = getCamera(mDiv);
-      const { fileName, position } = findFilenamePosition(mTimestamp)(seekData[mCamera]);
+      const mData = seekData[mCamera];
+      const { fileName, position } = findFilenamePosition(mTimestamp)(mData);
 
       const imgSrc = `${IMAGES_URL}/${mCamera}/${Math.floor(mTimestamp)}.jpg`;
       const videoSrc = `${VIDEOS_URL}/${fileName}`;
 
       const mImg = mDiv.getElementsByClassName("image-image")[0];
-      mImg.src = (fileName == "") ? "" : imgSrc;
-      mImg.style.height = (fileName == "") ? "0" : "initial";
+      mImg.src = fileName == "" ? "" : imgSrc;
+      mImg.style.height = fileName == "" ? "0" : "initial";
 
-      mDiv.style.maxHeight = `${mImg.offsetWidth * 9 / 16}px`;
+      mDiv.style.maxHeight = `${(mImg.offsetWidth * 9) / 16}px`;
 
       mDiv.setAttribute("data-video-src", videoSrc);
       mDiv.setAttribute("data-video-seek", position);
@@ -211,33 +200,26 @@ document.addEventListener("DOMContentLoaded", async (_) => {
   }
 
   function updateVideosByTime(currentTimestamp) {
-    updateVideos((_) => currentTimestamp, (e) => e.getAttribute("data-camera"));
+    updateVideos(
+      (_) => currentTimestamp,
+      (e) => e.getAttribute("data-camera")
+    );
   }
 
   function updateVideosByCamera(camera) {
-    updateVideos((e) => e.getAttribute("data-timestamp"), (_) => camera);
+    updateVideos(
+      (e) => e.getAttribute("data-timestamp"),
+      (_) => camera
+    );
   }
 
   imagesEl.innerHTML = "";
   const cameras = Object.keys(seekData);
 
-  const numElements = BY_TIME ? NUM_VIDS : SECONDS_PER_DAY / FRAME_PERIOD_SECONDS;
-  for (let i = 0; i < numElements; i++) {
+  for (let i = 0; i < NUM_IMAGES; i++) {
     const mImgEl = createImageElement(cameras[i], i * FRAME_PERIOD_SECONDS);
     imagesEl.appendChild(mImgEl);
-
-    mImgEl.addEventListener("click", (_) => {
-      const vidSrc = mImgEl.getAttribute("data-video-src");
-      const vidPos = mImgEl.getAttribute("data-video-seek");
-
-      overlayVideoSrcEl.setAttribute("src", vidSrc);
-      overlayVideoEl.currentTime = vidPos;
-
-      if (vidPos >= 0) {
-        overlayVideoEl.load();
-        overlayEl.classList.add("visible");
-      }
-    });
+    mImgEl.addEventListener("click", loadOverlay);
   }
 
   if (BY_TIME) {
@@ -256,7 +238,7 @@ document.addEventListener("DOMContentLoaded", async (_) => {
   pickerMinuteEl.addEventListener("input", updateByTime);
 
   pickerCameraEl.addEventListener("input", (ev) => {
-    updateVideosByCamera(ev.target.value,);
+    updateVideosByCamera(ev.target.value);
     ev.target.blur();
   });
 });
