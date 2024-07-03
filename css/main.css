@@ -103,6 +103,14 @@ main {
   width: 100%;
 }
 
+.images-container .image-wrapper .no-image-text{
+  display: none;
+  width: 100%;
+  margin: 0 auto;
+  text-align: center;
+  height: 0;
+}
+
 .overlay {
   position: fixed;
   top: 0;

@@ -108,15 +108,20 @@ function findFilenamePosition(ts) {
 function createImageElement(camera, tsOffset) {
   const imgContainerEl = document.createElement("div");
   const imgEl = document.createElement("img");
+  const imgTextEl = document.createElement("p");
 
   imgContainerEl.classList.add("image-wrapper");
   imgEl.classList.add("image-image");
+  imgTextEl.classList.add("no-image-text");
 
   imgContainerEl.setAttribute("data-camera", camera);
   imgContainerEl.setAttribute("data-timestamp", offsetToTimestamp(tsOffset));
   imgContainerEl.style.width = `${100 / NUM_COLS}%`;
 
+  imgTextEl.innerHTML = NOIMAGE[lang()];
+
   imgContainerEl.appendChild(imgEl);
+  imgContainerEl.appendChild(imgTextEl);
   return imgContainerEl;
 }
 
@@ -153,8 +158,12 @@ document.addEventListener("DOMContentLoaded", async (_) => {
       const videoSrc = `${VIDEOS_URL}/${fileName}`;
 
       const mImg = mDiv.getElementsByClassName("image-image")[0];
+      const noImg = mDiv.getElementsByClassName("no-image-text")[0];
+
       mImg.src = fileName == "" ? "" : imgSrc;
       mImg.style.height = fileName == "" ? "0" : "initial";
+
+      noImg.style.display = fileName == "" ? "block" : "none";
 
       mDiv.style.maxHeight = `${(mImg.offsetWidth * 9) / 16}px`;
 

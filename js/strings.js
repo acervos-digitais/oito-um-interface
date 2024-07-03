@@ -1,3 +1,8 @@
+const NOIMAGE = {
+  en: "Camera Not Available",
+  pt: "Camera Desativada"
+};
+
 const CAM2NAMES = {
   en: {
     "01-COBERTURA-PP-OESTE": "General View (West)",

@@ -1,9 +1,11 @@
 function createImageElement(frameData, obs) {
   const imgWrapperEl = document.createElement("div");
   const imgEl = document.createElement("img");
+  const imgTextEl = document.createElement("p");
 
   imgWrapperEl.classList.add("image-wrapper");
   imgEl.classList.add("image-image");
+  imgTextEl.classList.add("no-image-text");
 
   imgWrapperEl.setAttribute("data-video-src", `${VIDEOS_URL}/${frameData.file}`);
   imgWrapperEl.setAttribute("data-video-seek", frameData.time);
@@ -15,8 +17,11 @@ function createImageElement(frameData, obs) {
   const fname = `${Math.floor(frameData.timestamp)}.jpg`;
   const imgSrc = `${IMAGES_URL}/${cname}/${fname}`;
 
+  imgTextEl.innerHTML = NOIMAGE[lang()];
+
   imgWrapperEl.innerHTML = "";
   imgWrapperEl.appendChild(imgEl);
+  imgWrapperEl.appendChild(imgTextEl);
   imgEl.src = imgSrc;
 
   if (obs) {
