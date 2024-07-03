@@ -1,11 +1,3 @@
-const DATE_STRING_OPTIONS = {
-  weekday: "short",
-  month: "short",
-  year: "numeric",
-  day: "2-digit",
-  timeZoneName: "longOffset",
-};
-
 const minDate = new Date("2023-01-08T00:00:00-03:00");
 const maxDate = new Date("2023-01-08T23:59:59-03:00");
 
@@ -63,12 +55,6 @@ function timeToTimestamp(timeString) {
 
   mDate.setUTCSeconds(hourMinutes[0] * 3600 + hourMinutes[1] * 60);
   return mDate.getTime() / 1000;
-}
-
-function timestampToText(ts) {
-  const mDate = new Date(0);
-  mDate.setUTCSeconds(ts);
-  return mDate.toLocaleString("en-us", DATE_STRING_OPTIONS);
 }
 
 function timestampToPosition(ts, ts0, ts1, pos0, pos1) {

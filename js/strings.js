@@ -1,6 +1,24 @@
+const DAYSTRING = {
+  en: "Sun Jan 08 2023 GMT-0300",
+  pt: "Dom 08 Jan 2023 GMT-0300",
+};
+
+const MENUTEXT = {
+  en: {
+    time: "time",
+    location: "location",
+    objects: "objects",
+  },
+  pt: {
+    time: "horário",
+    location: "local",
+    objects: "objetos",
+  },
+};
+
 const NOIMAGE = {
   en: "Camera Not Available",
-  pt: "Camera Desativada"
+  pt: "Camera Desativada",
 };
 
 const CAM2NAMES = {
@@ -39,5 +57,41 @@ const CAM2NAMES = {
     "31-ANEXO-I-CONCHA-ANEXO": "Annex I - Entrance (External)",
     "32-ANEXO-III-REFEITORIO-CREDEN": "Annex III Accredited Cafeteria",
     "33-ANEXO-III-REFEITORIO": "Annex III - Cafeteria",
+  },
+  pt: {
+    "01-COBERTURA-PP-OESTE": "Vista Geral (Oeste)",
+    "02-COBERTURA-ENTRADA-PR": "Vista Geral Entrada Presidência da República",
+    "03-ENTRADA-PP-RAIO-X-TERREO": "Térreo (Raio-X)",
+    "04-PALACIO-ALA-LESTE-TERREO": "Térreo (Leste)",
+    "05-PALACIO-ALA-OESTE": "Térreo (Oeste)",
+    "06-PRIVATIVO-COMBOIO": "Comboio Privativo",
+    "07-SALA-PG-3-PISO": "3o andar - Gabinete Presidente da República",
+    "08-SUBSOLO-ADM": "Subsolo (Administrativo)",
+    "09-ELEVADOR-DE-SERVICO-TERREO": "Térreo - Elevador de Serviço",
+    "10-SALAO-NOBRE": "Térreo - Salão Nobre",
+    "11-SALAO-OESTE": "Térreo - Salão Oeste",
+    "12-2o-ANDAR-RAMPA": "2º andar - Rampa",
+    "13-2o-ANDAR-ELEVADOR-LESTE": "2º andar -  Elevador Leste",
+    "14-2o-ANDAR-ELEVADOR-OESTE": "2º andar -  Elevador Leste Oeste ",
+    "15-MESANINO": "Mezanino",
+    "16-CAMERA-VIP-PR": "Térreo - Entrada Presidência da República",
+    "17-3o-ANDAR-SALA-PR": "3º andar - Sala Presidente da República",
+    "18-3o-ANDAR-SALA-DE-AUDIENCIA": "3º andar - Sala de Audiência",
+    "19-3o-ANDAR-CORREDOR-ACESSO-LESTE": "3º andar - Corredor Acesso (Leste)",
+    "20-ELEVADORES-ALA-OESTE": "4o andar Elevadores (Oeste)",
+    "21-2o-ANDAR-ESCADA-OESTE": "2º andar Escada (Oeste)",
+    "22-3o-ANDAR-ESCADA-OESTE": "3º andar Escada (Oeste)",
+    "23-ELEVADOR-MINISTROS": "3º andar - Elevador do Ministros ",
+    "24-4o-ANDAR-ELEVADOR-LESTE": "4° andar - Elevador (Leste) ",
+    "25-4o-ANDAR-ESCADA-OESTE": "4° andar - Escada (Oeste)",
+    "26-4o-ANDAR-ELEVADOR-OESTE": "4º andar - Elevador (Oeste) ",
+    "27-4o-ANDAR-LADO-LESTE": "4º Andar (Leste)",
+    "28-4o-ANDAR-LADO-OESTE": "4º Andar - (Oeste)",
+    "29-ANEXO-I": "Anexo I",
+    "30-ANEXO-I-ENTRADA-PRINCIPAL-CATRACAS":
+      "Anexo I - Entrada Principal (Catracas)",
+    "31-ANEXO-I-CONCHA-ANEXO": "Anexo I - Entrada (Externa)",
+    "32-ANEXO-III-REFEITORIO-CREDEN": "Anexo III Refeitório Credenciamento",
+    "33-ANEXO-III-REFEITORIO": "Anexo III - Refeitório",
   },
 };
