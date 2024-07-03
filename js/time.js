@@ -160,7 +160,8 @@ document.addEventListener("DOMContentLoaded", async (_) => {
       const mImg = mDiv.getElementsByClassName("image-image")[0];
       const noImg = mDiv.getElementsByClassName("no-image-text")[0];
 
-      mImg.src = fileName == "" ? "" : imgSrc;
+      mImg.src = "";
+      setTimeout(() => mImg.src = fileName == "" ? "" : imgSrc, 50);
       mImg.style.height = fileName == "" ? "0" : "initial";
 
       noImg.style.display = fileName == "" ? "block" : "none";
