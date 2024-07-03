@@ -4,6 +4,16 @@ const SEEK_URL = "https://raw.githubusercontent.com/acervos-digitais/oito-um-uti
 const VIDEOS_URL = "//digitais.acervos.me/videos/0801-500";
 const IMAGES_URL = "//digitais.acervos.me/images/0801-500";
 
+function lang() {
+  let mlang = localStorage.getItem('0801lang');
+  if (!mlang) {
+    localStorage.setItem("0801lang", "en");
+    return "en";
+  } else {
+    return mlang;
+  }
+}
+
 function getGridDims(numVideos) {
   const videoArea = (window.innerWidth * window.innerHeight) / numVideos;
   const dimFactor = (videoArea / (16 * 9)) ** 0.5;

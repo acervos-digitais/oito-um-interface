@@ -6,42 +6,6 @@ const DATE_STRING_OPTIONS = {
   timeZoneName: "longOffset",
 };
 
-const CAM2NAMES = {
-  "01-COBERTURA-PP-OESTE": "General View (West)",
-  "02-COBERTURA-ENTRADA-PR": "General View of Presidency Entrance",
-  "03-ENTRADA-PP-RAIO-X-TERREO": "Ground Floor (Presidency Entrance X-Ray)",
-  "04-PALACIO-ALA-LESTE-TERREO": "Ground Floor (East)",
-  "05-PALACIO-ALA-OESTE": "Ground Floor (West)",
-  "06-PRIVATIVO-COMBOIO": "Private Convoy",
-  "07-SALA-PG-3-PISO": "3rd Floor - President's Personal Office",
-  "08-SUBSOLO-ADM": "Basement (Administrative)",
-  "09-ELEVADOR-DE-SERVICO-TERREO": "Ground Floor - Service Elevator",
-  "10-SALAO-NOBRE": "Ground Floor - Noble Hall",
-  "11-SALAO-OESTE": "Ground Floor - West Hall",
-  "12-2o-ANDAR-RAMPA": "2nd Floor - Ramp",
-  "13-2o-ANDAR-ELEVADOR-LESTE": "2nd Floor - East Elevator",
-  "14-2o-ANDAR-ELEVADOR-OESTE": "2nd Floor - East West Elevator",
-  "15-MESANINO": "Mezzanine",
-  "16-CAMERA-VIP-PR": "Ground Floor - President's Entrance",
-  "17-3o-ANDAR-SALA-PR": "3rd Floor - President's Office",
-  "18-3o-ANDAR-SALA-DE-AUDIENCIA": "3rd Floor - Audience Room",
-  "19-3o-ANDAR-CORREDOR-ACESSO-LESTE": "3rd Floor - Access Corridor (East)",
-  "20-ELEVADORES-ALA-OESTE": "4th Floor Elevators (West)",
-  "21-2o-ANDAR-ESCADA-OESTE": "2nd Floor Stairs (West)",
-  "22-3o-ANDAR-ESCADA-OESTE": "3rd Floor Stairs (West)",
-  "23-ELEVADOR-MINISTROS": "3rd Floor - Ministers' Elevator",
-  "24-4o-ANDAR-ELEVADOR-LESTE": "4th Floor - Elevator (East)",
-  "25-4o-ANDAR-ESCADA-OESTE": "4th Floor - Stairs (West)",
-  "26-4o-ANDAR-ELEVADOR-OESTE": "4th Floor - Elevator (West)",
-  "27-4o-ANDAR-LADO-LESTE": "4th Floor (East)",
-  "28-4o-ANDAR-LADO-OESTE": "4th Floor (West)",
-  "29-ANEXO-I": "Annex I",
-  "30-ANEXO-I-ENTRADA-PRINCIPAL-CATRACAS": "Annex I - Main Entrance Turnstiles",
-  "31-ANEXO-I-CONCHA-ANEXO": "Annex I - Entrance (External)",
-  "32-ANEXO-III-REFEITORIO-CREDEN": "Annex III Accredited Cafeteria",
-  "33-ANEXO-III-REFEITORIO": "Annex III - Cafeteria",
-};
-
 const minDate = new Date("2023-01-08T00:00:00-03:00");
 const maxDate = new Date("2023-01-08T23:59:59-03:00");
 
@@ -59,10 +23,10 @@ function populateCameraPicker(el, options) {
     const oEl = document.createElement("option");
     oEl.classList.add("camera-option");
     oEl.value = o;
-    if (o == Object.keys(CAM2NAMES)[4]) {
+    if (o == Object.keys(CAM2NAMES[lang()])[4]) {
       oEl.setAttribute("selected", "");
     }
-    oEl.innerHTML = CAM2NAMES[o];
+    oEl.innerHTML = CAM2NAMES[lang()][o];
     el.appendChild(oEl);
   });
 }
