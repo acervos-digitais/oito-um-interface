@@ -8,11 +8,13 @@ const MENUTEXT = {
     time: "time",
     location: "location",
     objects: "objects",
+    about: "about",
   },
   pt: {
     time: "horário",
     location: "camera",
     objects: "objetos",
+    about: "sobre",
   },
 };
 
@@ -121,4 +123,13 @@ const OBJ2LABEL = {
     vehicle: "Veículos",
     window: "Janelas",
   },
+};
+
+const ABOUTTEXT = {
+  en: `
+  <p>About: <a href="https://www.acervosdigitais.fau.usp.br/" target="_blank">project site</a></p>
+  `,
+  pt: `
+  <p>Sobre: <a href="https://www.acervosdigitais.fau.usp.br/" target="_blank">site do projeto</a></p>
+  `,
 };

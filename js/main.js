@@ -30,6 +30,7 @@ async function fetchData(mUrl) {
 }
 
 const prevDef = (ev) => ev.preventDefault();
+const stopProp = (ev) => ev.stopPropagation();
 
 let loadOverlay;
 
@@ -41,7 +42,7 @@ function populateNavMenu() {
 
   titleEl.innerHTML = DAYSTRING[lang()];
 
-  navLinkEls.forEach(a => {
+  navLinkEls.forEach((a) => {
     const aRef = a.getAttribute("href");
     const aSlug = a.getAttribute("data-slug");
 
@@ -50,18 +51,16 @@ function populateNavMenu() {
       a.classList.add("disabled");
     }
     a.innerHTML = MENUTEXT[lang()][aSlug];
-  })
+  });
 }
 
-document.addEventListener("DOMContentLoaded", async (_) => {
-  populateNavMenu();
-
-  const overlayEl = document.getElementById("overlay");
+function setupVideoOverlay() {
+  const vidOverlayEl = document.getElementById("video-overlay");
   const overlayVideoEl = document.getElementById("overlay-video");
   const overlayVideoSrcEl = document.getElementById("overlay-video-source");
 
-  overlayEl.addEventListener("click", () => {
-    overlayEl.classList.remove("visible");
+  vidOverlayEl.addEventListener("click", () => {
+    vidOverlayEl.classList.remove("visible");
     document.body.removeEventListener("wheel", prevDef);
 
     overlayVideoEl.pause();
@@ -69,9 +68,7 @@ document.addEventListener("DOMContentLoaded", async (_) => {
     overlayVideoEl.load();
   });
 
-  overlayVideoEl.addEventListener("click", (ev) => {
-    ev.stopPropagation();
-  });
+  overlayVideoEl.addEventListener("click", stopProp);
 
   loadOverlay = (ev) => {
     const vidSrc = ev.currentTarget.getAttribute("data-video-src");
@@ -82,8 +79,33 @@ document.addEventListener("DOMContentLoaded", async (_) => {
 
     if (vidPos >= 0) {
       overlayVideoEl.load();
-      overlayEl.classList.add("visible");
+      vidOverlayEl.classList.add("visible");
       document.body.addEventListener("wheel", prevDef, { passive: false });
     }
   };
+}
+
+function setupAboutOverlay() {
+  const aboutOverlayEl = document.getElementById("about-overlay");
+  const overlayAboutEl = document.getElementById("overlay-about");
+  const aboutLinkEl = document.getElementById("about-link");
+
+  aboutOverlayEl.addEventListener("click", () => {
+    aboutOverlayEl.classList.remove("visible");
+    document.body.removeEventListener("wheel", prevDef);
+  });
+
+  overlayAboutEl.addEventListener("click", stopProp);
+
+  aboutLinkEl.addEventListener("click", () => {
+    aboutOverlayEl.classList.add("visible");
+    overlayAboutEl.innerHTML = ABOUTTEXT[lang()];
+    document.body.addEventListener("wheel", prevDef, { passive: false });
+  });
+}
+
+document.addEventListener("DOMContentLoaded", async (_) => {
+  populateNavMenu();
+  setupVideoOverlay();
+  setupAboutOverlay();
 });
