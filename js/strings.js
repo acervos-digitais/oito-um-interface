@@ -131,11 +131,13 @@ const ABOUTTEXT = {
   <p>LOCATION: display all available videos from a specified camera.</p>
   <p>OBJECTS: navigate videos by specifying objects of interest.</p>
   <p>About: <a href="https://www.acervosdigitais.fau.usp.br/" target="_blank">project site</a></p>
+  <p>Code: <a href="https://github.com/acervos-digitais" target="_blank">GitHub</a></p>
   `,
   pt: `
   <p>HORÁRIO: mostra videos de todas as cameras no horário especificado.</p>
   <p>CAMERA: mostra todos os videos disponíveis da camera escolhida.</p>
   <p>OBJETOS: navegação de videos por objetos de interesse.</p>
   <p>Sobre: <a href="https://www.acervosdigitais.fau.usp.br/" target="_blank">site do projeto</a></p>
+  <p>Código: <a href="https://github.com/acervos-digitais" target="_blank">GitHub</a></p>
   `,
 };
