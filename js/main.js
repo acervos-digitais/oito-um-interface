@@ -33,15 +33,28 @@ const prevDef = (ev) => ev.preventDefault();
 
 let loadOverlay;
 
-document.addEventListener("DOMContentLoaded", async (_) => {
+function populateNavMenu() {
   const mUrl = location.href;
-  Array.from(document.getElementsByTagName("a")).forEach((a) => {
+  const titleEl = document.getElementById("navigation-title");
+  const navMenuEl = document.getElementById("navigation-menu");
+  const navLinkEls = navMenuEl.querySelectorAll("[data-slug]");
+
+  titleEl.innerHTML = DAYSTRING[lang()];
+
+  navLinkEls.forEach(a => {
     const aRef = a.getAttribute("href");
+    const aSlug = a.getAttribute("data-slug");
+
     if (mUrl.slice(-5) == aRef.slice(-5)) {
       a.removeAttribute("href");
       a.classList.add("disabled");
     }
-  });
+    a.innerHTML = MENUTEXT[lang()][aSlug];
+  })
+}
+
+document.addEventListener("DOMContentLoaded", async (_) => {
+  populateNavMenu();
 
   const overlayEl = document.getElementById("overlay");
   const overlayVideoEl = document.getElementById("overlay-video");

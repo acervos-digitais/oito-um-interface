@@ -71,6 +71,10 @@ main {
   margin: 0 auto 8px;
 }
 
+.navigation-menu a {
+  text-transform: uppercase;
+}
+
 .navigation-container {
   width: 100%;
   display: flex;

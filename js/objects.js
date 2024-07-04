@@ -83,7 +83,7 @@ document.addEventListener("DOMContentLoaded", async (_) => {
     const optButEl = document.createElement("button");
     optButEl.classList.add("object-option-button");
     optButEl.setAttribute("data-option", o);
-    optButEl.innerHTML = o;
+    optButEl.innerHTML = OBJ2LABEL[lang()][o];
 
     optButEl.addEventListener("click", (ev) => {
       selInputEl.childNodes.forEach((e) => e.classList.remove("selected"));

@@ -11,7 +11,7 @@ const MENUTEXT = {
   },
   pt: {
     time: "horário",
-    location: "local",
+    location: "camera",
     objects: "objetos",
   },
 };
@@ -93,5 +93,32 @@ const CAM2NAMES = {
     "31-ANEXO-I-CONCHA-ANEXO": "Anexo I - Entrada (Externa)",
     "32-ANEXO-III-REFEITORIO-CREDEN": "Anexo III Refeitório Credenciamento",
     "33-ANEXO-III-REFEITORIO": "Anexo III - Refeitório",
+  },
+};
+
+const OBJ2LABEL = {
+  en: {
+    "brazilian flag": "Flags",
+    chair: "Chairs",
+    "fire extinguisher": "Fire Extinguishers",
+    painting: "Paintings",
+    person: "People",
+    sculpture: "Sculptures",
+    "support column": "Support Columns",
+    table: "Tables",
+    vehicle: "Vehicles",
+    window: "Windows",
+  },
+  pt: {
+    "brazilian flag": "Bandeiras",
+    chair: "Cadeiras",
+    "fire extinguisher": "Extintores De Incêndio",
+    painting: "Quadros",
+    person: "Pessoas",
+    sculpture: "Esculturas",
+    "support column": "Colunas de Suporte",
+    table: "Mesas",
+    vehicle: "Veículos",
+    window: "Janelas",
   },
 };
