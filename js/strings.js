@@ -127,17 +127,17 @@ const OBJ2LABEL = {
 
 const ABOUTTEXT = {
   en: `
-  <p>TIME: display videos from all cameras at a specified time.</p>
-  <p>LOCATION: display all available videos from a specified camera.</p>
-  <p>OBJECTS: navigate videos by specifying objects of interest.</p>
-  <p>About: <a href="https://www.acervosdigitais.fau.usp.br/" target="_blank">project site</a></p>
-  <p>Code: <a href="https://github.com/acervos-digitais" target="_blank">GitHub</a></p>
+  <p>Navigation interface for the more than 500 hours of videos from Palácio do Planalto on January 8, 2023. These images come from 33 surveillance cameras and were made available by the GSI by order of the Federal Supreme Court.</p>
+  <p>When browsing by <a href="../time">TIME</a> you browse all the videos at a chosen time. This makes it possible to obtain an overview of the movement of the mob throughout the Palace on January 8, 2023.</p>
+  <p>In <a href="../location">LOCATION</a> mode, you navigate through the different spaces recorded by the Palace cameras. This allows you to understand the dynamics of occupation during the invasion of the coup plotters throughout the day.</p>
+  <p>In <a href="../objects">OBJECTS</a> mode, you browse architectural elements, such as windows and columns, and objects used by the mob that became icons for the event, like the national flag and fire extinguishers.</p>
+  <p>Project developed within the research group <a href = "https://www.acervosdigitais.fau.usp.br/" target = "_blank">Acervos Digitais</a >. Code and scripts used are available on our <a href="https://github.com/acervos-digitais" target="_blank">GitHub</a>.</p>
   `,
   pt: `
-  <p>HORÁRIO: mostra videos de todas as cameras no horário especificado.</p>
-  <p>CAMERA: mostra todos os videos disponíveis da camera escolhida.</p>
-  <p>OBJETOS: navegação de videos por objetos de interesse.</p>
-  <p>Sobre: <a href="https://www.acervosdigitais.fau.usp.br/" target="_blank">site do projeto</a></p>
-  <p>Código: <a href="https://github.com/acervos-digitais" target="_blank">GitHub</a></p>
+  <p>Interface de acesso às 500 horas de vídeos do Palácio do Planalto no dia 8 de janeiro de 2023. Essas imagens são provenientes das 33 câmeras de vigilância do local e foram disponibilizadas pelo GSI por ordem do Supremo Tribunal Federal.</p>
+  <p>No modo de navegação por <a href="../time">HORÁRIO</a> você navega em todos os vídeos a partir de um horário escolhido.Isso possibilita obter uma visão de conjunto da movimentação dos golpistas no Palácio ao longo do dia 8 de janeiro de 2023.</p>
+  <p>No modo <a href="../location">CAMERA</a>, você navega pelos diferentes espaços registrados pelas câmeras do Palácio do Planalto.Isso permite compreender as dinâmicas de ocupação durante a invasão dos golpistas ao longo do dia.</p>
+  <p>No modo <a href="../objects">OBJETOS</a>, você navega por elementos arquitetônicos, como janelas e colunas, e marcadores que se sobressaíram em nossas análises, como o uso da bandeira nacional e de extintores de incêndio, pelos golpistas.</p>
+  <p>Projeto desenvolvido dentro do grupo de pesquisa <a href = "https://www.acervosdigitais.fau.usp.br/" target = "_blank">Acervos Digitais</a>. Códigos e scripts usado estão disponíveis no nosso <a href="https://github.com/acervos-digitais" target="_blank">GitHub</a> em formato aberto.</p>
   `,
 };
