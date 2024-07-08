@@ -54,6 +54,25 @@ function populateNavMenu() {
   });
 }
 
+function populateLangMenu() {
+  const langMenuEl = document.getElementById("lang-menu");
+
+  ["en", "pt"].forEach(l => {
+    const langEl = document.createElement("div");
+    langEl.classList.add("lang-option");
+    langEl.innerHTML = l;
+    if (l == lang()) {
+      langEl.classList.add("selected");
+    } else {
+      langEl.addEventListener("click", () => {
+        localStorage.setItem("0801lang", l);
+        location.reload();
+      });
+    }
+    langMenuEl.appendChild(langEl);
+  });
+}
+
 function setupVideoOverlay() {
   const vidOverlayEl = document.getElementById("video-overlay");
   const overlayVideoEl = document.getElementById("overlay-video");
@@ -108,4 +127,5 @@ document.addEventListener("DOMContentLoaded", async (_) => {
   populateNavMenu();
   setupVideoOverlay();
   setupAboutOverlay();
+  populateLangMenu();
 });
