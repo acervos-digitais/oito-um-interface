@@ -41,7 +41,7 @@ document.addEventListener("DOMContentLoaded", async (_) => {
   const selInputEl = document.getElementById("selection-container");
   const imagesEl = document.getElementById("images-container");
 
-  frameOnscreen = (entries, _) => {
+  const frameOnscreen = (entries, _) => {
     entries.forEach((entry) => {
       const eEl = entry.target;
       if (entry.isIntersecting) {
