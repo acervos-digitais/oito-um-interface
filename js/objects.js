@@ -79,7 +79,10 @@ document.addEventListener("DOMContentLoaded", async (_) => {
     cFrameIdx = loadFrames(cFrames, 0);
   }
 
-  Object.keys(frameData.objects).forEach((o) => {
+  // const allObjects = Object.keys(frameData.objects);
+  const validObjects = ["brazilian flag", "fire extinguisher", "person", "vehicle"];
+
+  validObjects.forEach((o) => {
     const optButEl = document.createElement("button");
     optButEl.classList.add("object-option-button");
     optButEl.setAttribute("data-option", o);
