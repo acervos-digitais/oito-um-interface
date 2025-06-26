@@ -2,7 +2,7 @@ const OBJS_URL = "https://raw.githubusercontent.com/acervos-digitais/oito-um-uti
 const SEEK_URL = "https://raw.githubusercontent.com/acervos-digitais/oito-um-utils/main/metadata/0801-1152/seek.json";
 
 const VIDEOS_URL = "//digitais.acervos.at.eu.org/videos/0801-500";
-const IMAGES_URL = "//media.acervos.at.eu.org/images/0801-500";
+const IMAGES_URL = "//acervos-digitais.github.io/oito-um-media/images/0801-500";
 
 function lang() {
   let mlang = localStorage.getItem("0801lang");
