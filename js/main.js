@@ -1,7 +1,7 @@
 const OBJS_URL = "https://acervos-digitais.github.io/oito-um-utils/metadata/objects-1152/objects.json";
 const SEEK_URL = "https://acervos-digitais.github.io/oito-um-utils/metadata/0801-1152/seek.json";
 
-const VIDEOS_URL = "//digitais.acervos.at.eu.org/videos/0801-500";
+const VIDEOS_URL = "//197.acervos.at.eu.org/videos/0801-500";
 const IMAGES_URL = "//acervos-digitais.github.io/oito-um-media/images/0801-500";
 
 function lang() {
